@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  legal-assistant:
+    build: .
+    image: legal-assistant:latest
+    container_name: legal-assistant
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - HUGGINGFACE_API_TOKEN=${HUGGINGFACE_API_TOKEN:-}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - MAX_UPLOAD_SIZE=25  # in MB
+      - MAX_CHUNK_SIZE=512
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - LLM_MODEL=mistralai/Mistral-7B-Instruct-v0.2
+      - VECTOR_DB_PATH=/app/data/vector_store
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+
+  # Uncomment if you want to add a separate vector database like Weaviate
+  # weaviate:
+  #   image: semitechnologies/weaviate:1.21.2
+  #   container_name: weaviate
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - QUERY_DEFAULTS_LIMIT=20
+  #     - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+  #     - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+  #     - DEFAULT_VECTORIZER_MODULE=text2vec-transformers
+  #     - ENABLE_MODULES=text2vec-transformers
+  #     - TRANSFORMERS_INFERENCE_API=http://t2v-transformers:8080
+  #   volumes:
+  #     - weaviate_data:/var/lib/weaviate
+  #   depends_on:
+  #     - t2v-transformers
+
+  # t2v-transformers:
+  #   image: semitechnologies/transformers-inference:sentence-transformers-all-MiniLM-L6-v2
+  #   container_name: t2v-transformers
+  #   restart: unless-stopped
+  #   environment:
+  #     - ENABLE_CUDA=0
+
+# Uncomment if using Weaviate
+# volumes:
+#   weaviate_data:
+#     name: weaviate_data

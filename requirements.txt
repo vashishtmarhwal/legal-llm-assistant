@@ -1,0 +1,44 @@
+# Core dependencies
+fastapi>=0.95.0
+uvicorn>=0.21.1
+langchain>=0.0.300
+langchain-community>=0.0.10
+pydantic>=2.4.2
+python-dotenv>=1.0.0
+python-multipart>=0.0.6
+
+# Document processing
+pypdf>=3.15.1
+unstructured>=0.10.30
+unstructured-inference>=0.7.10
+
+# LLM and embeddings
+sentence-transformers>=2.2.2
+transformers>=4.33.2
+huggingface-hub>=0.17.3
+accelerate>=0.23.0
+bitsandbytes>=0.41.1
+
+# Vector database
+weaviate-client>=3.24.1
+faiss-cpu>=1.7.4
+
+# UI
+gradio>=3.50.2
+
+# Evaluation
+rouge-score>=0.1.2
+nltk>=3.8.1
+
+# Testing
+pytest>=7.4.2
+pytest-cov>=4.1.0
+
+# Linting and formatting
+black>=23.9.1
+isort>=5.12.0
+flake8>=6.1.0
+
+# Type checking
+mypy>=1.5.1
+types-requests>=2.31.0.2
